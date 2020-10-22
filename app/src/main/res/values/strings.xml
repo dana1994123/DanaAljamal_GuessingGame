@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Guessing Game</string>
+    <string name="prompt">I have a number between 1 to 25. Can you guess it correctly? You have 5 chances.</string>
+    <string name="answer">Answer</string>
+    <string name="check_answer">Check Answer</string>
+    <string name="scoreboard">Scoreboard</string>
+</resources>
