@@ -8,7 +8,7 @@ import java.util.*
 data class Score(
     @ColumnInfo(name = "id") var id: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "username") var username: String,
-    @ColumnInfo(name = "attempt_result") var attemptResult: Boolean
+    @ColumnInfo(name = "attempt_result") var attemptResult: Boolean,
 ){
     constructor(username: String, attemptResult: Boolean) : this(
         id = UUID.randomUUID().toString(),
