@@ -1,13 +1,16 @@
 package com.profjk.guessinggamef20mid.views
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.View
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.profjk.guessinggamef20mid.R
+import com.profjk.guessinggamef20mid.managers.SharedPreferenceManager
 import com.profjk.guessinggamef20mid.model.Score
 import com.profjk.guessinggamef20mid.viewModel.ScoreViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -19,6 +22,7 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener  {
     var attempt = 5
     val TAG : String = this@MainActivity.toString()
     lateinit var scoreViewModel : ScoreViewModel
+    var point =0
 
     companion object{
         var score = Score("Dana",false)
@@ -31,15 +35,20 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener  {
         scoreViewModel = ScoreViewModel(this.application)
 
 
-        this.generateRandomNumber()
 
         btnCheck.setOnClickListener(this)
+        this.generateRandomNumber()
+
+
 
     }
 
+    @SuppressLint("ResourceType")
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_home, menu)
         return super.onCreateOptionsMenu(menu)
+
+
     }
 
     private fun generateRandomNumber() {
@@ -66,7 +75,9 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener  {
                     attempt -=1
                     tvAttempts.text =attempt.toString()
                     this.playGame()
+                    this.saveScoreToDB()
                 }
+
             }
         }
     }
@@ -80,13 +91,16 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener  {
             Toast.makeText(this, "Correct. You win", Toast.LENGTH_LONG).show()
             alertBuilder.setTitle("Result")
             alertBuilder.setMessage("Great! You won the game. Do You have to play again ?")
+            point += attempt
+
+            SharedPreferenceManager.write(SharedPreferenceManager.ATTEMPT, point.toString())
             alertBuilder.setPositiveButton("PLAY AGAIN"){ dialog, which ->
                 //generate a new random number and new 5 attempt as well as adding the attempt to the  :
-                score.attemptResult= true;
-
-
-
+                attempt = 5
+                this.generateRandomNumber()
+                this.playGame()
             }
+
             alertBuilder.setNegativeButton("EXIT GAME"){ dialog, which ->
                 //terminate the app :
                 this@MainActivity.finish()
@@ -110,14 +124,13 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener  {
         while (attempt!= 0){
             this.checkMatchNumber()
         }
-
         this.generateRandomNumber()
 
     }
 
 
 
-    fun saveUserToDB(){
+    fun saveScoreToDB(){
         try{
             scoreViewModel.insertAll(score)
 
