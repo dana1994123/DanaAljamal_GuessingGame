@@ -2,25 +2,39 @@ package com.profjk.guessinggamef20mid.views
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.profjk.guessinggamef20mid.R
+import com.profjk.guessinggamef20mid.model.Score
+import com.profjk.guessinggamef20mid.viewModel.ScoreViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import java.lang.Exception
 import java.util.*
 
 class MainActivity : AppCompatActivity() ,View.OnClickListener  {
     var correctNumber = 0
     var attempt = 5
+    val TAG : String = this@MainActivity.toString()
+    lateinit var scoreViewModel : ScoreViewModel
+
+    companion object{
+        var score = Score("Dana",false)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        scoreViewModel = ScoreViewModel(this.application)
+
+
+        this.generateRandomNumber()
 
         btnCheck.setOnClickListener(this)
-        this.generateRandomNumber()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -33,11 +47,12 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener  {
     }
 
 
-    fun dataValidation() : Boolean{
-        if (edtAnswer.text.toString().isEmpty()) {
-            edtAnswer.error = "Email cannot be empty"
+    private fun validateData() : Boolean{
+        if (edtAnswer.text.isEmpty()){
+            edtAnswer.setError("Email cannot be empty")
             return false
         }
+
         return true
     }
 
@@ -46,9 +61,10 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener  {
     override fun onClick(v: View?) {
         if (v != null) {
             if (v.id == edtAnswer.id) {
-                if(this.dataValidation()) {
+                if(this.validateData()) {
+                    this.validateData()
                     attempt -=1
-                    tvAttempts.text = attempt.toString()
+                    tvAttempts.text =attempt.toString()
                     this.playGame()
                 }
             }
@@ -66,6 +82,7 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener  {
             alertBuilder.setMessage("Great! You won the game. Do You have to play again ?")
             alertBuilder.setPositiveButton("PLAY AGAIN"){ dialog, which ->
                 //generate a new random number and new 5 attempt as well as adding the attempt to the  :
+                score.attemptResult= true;
 
 
 
@@ -79,7 +96,6 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener  {
         else if (edtAnswer.text.toString().toInt() > correctNumber){
             Toast.makeText(this,"The number that you have entered is greater" ,
             Toast.LENGTH_SHORT).show()
-            //decrease the attempt by one
         }
 
         else if (edtAnswer.text.toString().toInt() < correctNumber){
@@ -94,9 +110,23 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener  {
         while (attempt!= 0){
             this.checkMatchNumber()
         }
+
         this.generateRandomNumber()
 
     }
+
+
+
+    fun saveUserToDB(){
+        try{
+            scoreViewModel.insertAll(score)
+
+        }catch (ex: Exception){
+            Log.e(TAG, ex.toString())
+
+        }
+    }
+
 
 
 

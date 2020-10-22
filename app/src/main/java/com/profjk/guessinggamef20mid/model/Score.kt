@@ -1,4 +1,4 @@
-package com.profjk.guessinggamef20mid.database
+package com.profjk.guessinggamef20mid.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
