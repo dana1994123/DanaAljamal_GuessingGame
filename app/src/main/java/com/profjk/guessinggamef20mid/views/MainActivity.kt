@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener  {
 
     @SuppressLint("ResourceType")
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_home, menu)
+        val root = menuInflater.inflate(R.menu.menu_home, menu)
         return super.onCreateOptionsMenu(menu)
 
 
@@ -61,7 +61,6 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener  {
             edtAnswer.error = "the answer cannot be empty "
             return false
         }
-
         return true
     }
 
@@ -77,10 +76,7 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener  {
                     this.checkMatchNumber()
                     edtAnswer.setText("")
                     tvAttempts.text = "the remaining attempt is ${attempt}"
-                    //this.saveScoreToDB()
                 }
-
-
             }
         }
     }
@@ -131,8 +127,6 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener  {
         }
 
     }
-
-
 
 
     fun saveScoreToDB(){
