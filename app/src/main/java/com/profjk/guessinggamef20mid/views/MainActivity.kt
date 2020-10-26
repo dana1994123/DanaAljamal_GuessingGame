@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener  {
 
     private fun validateData() : Boolean{
         if (edtAnswer.text.isEmpty()){
-            edtAnswer.setError("Email cannot be empty")
+            edtAnswer.error = "the answer cannot be empty "
             return false
         }
 
@@ -69,14 +69,17 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener  {
     //when the btn is clicked we want to check if the num = random and validate
     override fun onClick(v: View?) {
         if (v != null) {
-            if (v.id == edtAnswer.id) {
+            if (v.id == btnCheck.id) {
                 if(this.validateData()) {
-                    this.validateData()
+                    //decrement the attempt
                     attempt -=1
-                    tvAttempts.text =attempt.toString()
-                    this.playGame()
-                    this.saveScoreToDB()
+                    //check if the answer is right
+                    this.checkMatchNumber()
+                    edtAnswer.setText("")
+                    tvAttempts.text = "the remaining attempt is ${attempt}"
+                    //this.saveScoreToDB()
                 }
+
 
             }
         }
@@ -85,53 +88,57 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener  {
 
     fun checkMatchNumber(){
         //check if the generated num == number added by user
-        if (edtAnswer.text.toString().toInt() == correctNumber){
-            //alert showing if he wins winner
+        if ((edtAnswer.text.toString().toInt() == correctNumber)|| (attempt == 0 )){
+            //add the remaining attempt to the point
+            if (attempt != 0) {
+                point += attempt
+
+                //save the score to the DB
+                this.saveScoreToDB()
+            }
+
+            //alert showing if he win and to redo the game :
             val alertBuilder = AlertDialog.Builder(this)
             Toast.makeText(this, "Correct. You win", Toast.LENGTH_LONG).show()
             alertBuilder.setTitle("Result")
             alertBuilder.setMessage("Great! You won the game. Do You have to play again ?")
-            point += attempt
 
-            SharedPreferenceManager.write(SharedPreferenceManager.ATTEMPT, point.toString())
+
             alertBuilder.setPositiveButton("PLAY AGAIN"){ dialog, which ->
                 //generate a new random number and new 5 attempt as well as adding the attempt to the  :
                 attempt = 5
+                tvAttempts.setText("")
                 this.generateRandomNumber()
-                this.playGame()
             }
 
             alertBuilder.setNegativeButton("EXIT GAME"){ dialog, which ->
                 //terminate the app :
-                this@MainActivity.finish()
+                this@MainActivity.finishAffinity()
 
             }
+            alertBuilder.show()
         }
         else if (edtAnswer.text.toString().toInt() > correctNumber){
             Toast.makeText(this,"The number that you have entered is greater" ,
             Toast.LENGTH_SHORT).show()
+
         }
 
         else if (edtAnswer.text.toString().toInt() < correctNumber){
             Toast.makeText(this,"The number that you have entered is less than the correct answer" ,
                 Toast.LENGTH_SHORT).show()
-            //decrease the attempt by one
+
         }
+
     }
 
-
-    fun playGame(){
-        while (attempt!= 0){
-            this.checkMatchNumber()
-        }
-        this.generateRandomNumber()
-
-    }
 
 
 
     fun saveScoreToDB(){
         try{
+            //chage the attempt result and save the score to the db
+            score.attemptResult = true
             scoreViewModel.insertAll(score)
 
         }catch (ex: Exception){
