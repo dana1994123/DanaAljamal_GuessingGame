@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/score_navigation"
+    app:startDestination="@id/home_Fragment_nav">
+
+    <fragment
+        android:id="@+id/nav_score"
+        android:name="com.profjk.guessinggamef20mid.scorefragment.ScoreFragment"
+        android:label="fragment_score"
+        tools:layout="@layout/fragment_score" >
+        <action
+            android:id="@+id/action_nav_score_to_home_Fragment_nav"
+            app:destination="@id/home_Fragment_nav" />
+    </fragment>
+    <fragment
+        android:id="@+id/home_Fragment_nav"
+        android:name="com.profjk.guessinggamef20mid.scorefragment.homeFragment.Home_Fragment_nav"
+        android:label="fragment_home__nav"
+        tools:layout="@layout/fragment_home__nav" >
+        <action
+            android:id="@+id/action_home_Fragment_nav_to_nav_score2"
+            app:destination="@id/nav_score" />
+    </fragment>
+</navigation>

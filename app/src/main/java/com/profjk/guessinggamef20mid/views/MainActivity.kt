@@ -1,17 +1,25 @@
 package com.profjk.guessinggamef20mid.views
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.profjk.guessinggamef20mid.R
 import com.profjk.guessinggamef20mid.managers.SharedPreferenceManager
 import com.profjk.guessinggamef20mid.model.Score
+import com.profjk.guessinggamef20mid.scorefragment.ScoreFragment
 import com.profjk.guessinggamef20mid.viewModel.ScoreViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.Exception
@@ -23,6 +31,7 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener  {
     val TAG : String = this@MainActivity.toString()
     lateinit var scoreViewModel : ScoreViewModel
     var point =0
+    private lateinit var navController: NavController
 
     companion object{
         var score = Score("Dana",false)
@@ -41,12 +50,18 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener  {
 
 
 
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        //navView.setupWithNavController(navController)
+
+
+
     }
 
     @SuppressLint("ResourceType")
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val root = menuInflater.inflate(R.menu.menu_home, menu)
-        return super.onCreateOptionsMenu(menu)
+         menuInflater.inflate(R.menu.menu_home, menu)
+            return super.onCreateOptionsMenu(menu)
 
 
     }
